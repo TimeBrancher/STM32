@@ -14,11 +14,11 @@ Release/
 .launches/
 *.launch
 
-# Optional: Ignore the generated drivers if you want to keep it super clean, 
-# BUT for a portfolio, it's often better to keep them so it compiles for others.
-# Drivers/ 
-# Middlewares/
-
 # OS specific
 .DS_Store
 Thumbs.db
+
+# STM32CubeIDE project files
+.project
+.cproject
+.settings/
