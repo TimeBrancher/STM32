@@ -1,0 +1,1 @@
+In this folder you can find code that i write while studying about STM32, every project that i will upload use the news things that i discover, also you can find a readme.md in every folder explaining how what i learned is applied 
