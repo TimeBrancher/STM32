@@ -124,14 +124,14 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
-  //An array with the pin numbres of the three LEDs, it allows to scale in case of adding more, by simply introduce the PIN
-  int led_pins[3] = {GPIO_PIN_0,GPIO_PIN_7,GPIO_PIN_14};
-  for (int it=0;it<3;it++)
+  //An array with the pin numbers of the three LEDs, it allows to scale in case of adding more, by simply introduce the PIN
+  uint16_t led_pins[3] = {GPIO_PIN_0,GPIO_PIN_7,GPIO_PIN_14};
+  for (uint16_t it=0;it<3;it++)
   {
-	  for (int i=0; i<3;i++){
+	  for (size_t i=0; i<sizeof(led_pins);i++){
 		  //turn on and turn off the led one by one waiting some time between it
 		  HAL_GPIO_WritePin(GPIOB,led_pins[i],GPIO_PIN_SET);
-		  HAL_Delay(200);
+		  HAL_Delay(20);
 		  HAL_GPIO_WritePin(GPIOB,led_pins[i],GPIO_PIN_RESET);
 	  }
   }
