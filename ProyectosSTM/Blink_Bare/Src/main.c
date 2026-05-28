@@ -27,8 +27,10 @@ int main(void){
 	RCC_AHB1ENR |= (1<<1);
 	GPIOB_MODER &= ~((3<<28)|(3<<14)|(3<<0));
 	GPIOB_MODER |= ((1<<28) | (1<<14) | (1<<0));
-	GPIOB_BSRR = ((1<<14) | (1<<7) | (1<<0));
 	while(1){
-
+		GPIOB_BSRR = ((1<<14) | (1<<7) | (1<<0));
+		for (volatile uint32_t i=0; i<1E6; i++);
+	    GPIOB_BSRR = ((1<<30) | (1<<23) | (1<<16));
+		for (volatile uint32_t i=0; i<1E6; i++);
 	}
 }
