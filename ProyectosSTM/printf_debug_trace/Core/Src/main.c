@@ -20,6 +20,8 @@
 #include "main.h"
 #include "string.h"
 
+#include <stdio.h>
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -83,13 +85,21 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+int _write(int file,char *ptr, int len){
+	int i=0;
+	for (i=0;i<len;i++){
+			ITM_SendChar((*ptr++));
+	}
+	return len;
+}
 /* USER CODE END 0 */
-
+uint8_t count = 0;
 /**
   * @brief  The application entry point.
   * @retval int
   */
+volatile uint32_t *gpio_idr = (volatile uint32_t *)0x40020410UL;
+volatile uint8_t state;
 int main(void)
 {
 
@@ -124,25 +134,25 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
-  //An array with the pin numbers of the three LEDs, it allows to scale in case of adding more, by simply introduce the PIN
-  uint16_t led_pins[3] = {GPIO_PIN_0,GPIO_PIN_7,GPIO_PIN_14};
-  for (uint16_t it=0;it<3;it++)
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  uint16_t Ciclo = 0;
+  while (1)
   {
-	  for (size_t i=0; i<sizeof(led_pins);i++){
-		  //turn on and turn off the led one by one waiting some time between it
-		  HAL_GPIO_WritePin(GPIOB,led_pins[i],GPIO_PIN_SET);
-		  HAL_Delay(200);
-		  HAL_GPIO_WritePin(GPIOB,led_pins[i],GPIO_PIN_RESET);
-	  }
+    /* USER CODE END WHILE */
+	  Ciclo++;
+	  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7,GPIO_PIN_SET);
+	  state =HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_7);
+	  printf("Ciclo %d\t Estado:%d \n", Ciclo,state);
+	  HAL_Delay(100);
+	  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7,GPIO_PIN_RESET);
+	  HAL_Delay(100);
+	  state =HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_7);
+	  printf("Ciclo %d\t Estado:%d \n", Ciclo,state);
+    /* USER CODE BEGIN 3 */
   }
-  //turn on LEDs permanently, outside the while so it doesnt keep repeating instructions which waste CPU cycles
-  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7,GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_14,GPIO_PIN_SET);
-  while (1){
-
-  }
-
+  /* USER CODE END 3 */
 }
 
 /**
@@ -153,10 +163,6 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-
-  /** Configure LSE Drive Capability
-  */
-  HAL_PWR_EnableBkUpAccess();
 
   /** Configure the main internal regulator output voltage
   */
@@ -342,7 +348,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LD1_Pin|LD3_Pin|GPIO_PIN_7, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, LD1_Pin|LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
@@ -353,8 +362,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USER_Btn_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD1_Pin LD3_Pin PB7 */
-  GPIO_InitStruct.Pin = LD1_Pin|LD3_Pin|GPIO_PIN_7;
+  /*Configure GPIO pin : PA5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LD1_Pin LD3_Pin LD2_Pin */
+  GPIO_InitStruct.Pin = LD1_Pin|LD3_Pin|LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
