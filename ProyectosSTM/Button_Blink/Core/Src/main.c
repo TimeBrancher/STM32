@@ -131,6 +131,7 @@ int main(void)
   uint8_t vectorSize = sizeof(Vector) / sizeof(Vector[0]);
   while (1)
   {
+<<<<<<< HEAD
 	  for (uint8_t i=0;i<vectorSize;i++){
 		  HAL_GPIO_WritePin(GPIOB,Vector[i],GPIO_PIN_SET);
 	  }
@@ -144,6 +145,20 @@ int main(void)
 			  HAL_GPIO_WritePin(GPIOB,Vector[i],GPIO_PIN_RESET);
 		  }
 
+=======
+	  if (HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_13)){
+		  for (uint8_t i=0; i<sizeof(Vector);i++){
+			  HAL_GPIO_WritePin(GPIOB,Vector[i],GPIO_PIN_RESET);
+		  }
+		  for (uint8_t i=0;i<sizeof(Vector);i++){
+			  HAL_GPIO_WritePin(GPIOB,Vector[i],GPIO_PIN_SET);
+			  HAL_Delay(100);
+			  HAL_GPIO_WritePin(GPIOB,Vector[i],GPIO_PIN_RESET);
+		  }
+		  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,GPIO_PIN_SET);
+		  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7,GPIO_PIN_SET);
+		  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_14,GPIO_PIN_SET);
+>>>>>>> 5bce1ef9e2935c9781e133def6e2a918db716fbe
 	  }
     /* USER CODE END WHILE */
 
@@ -356,8 +371,13 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : PC13 */
   GPIO_InitStruct.Pin = GPIO_PIN_13;
+<<<<<<< HEAD
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+=======
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+>>>>>>> 5bce1ef9e2935c9781e133def6e2a918db716fbe
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD1_Pin LD3_Pin LD2_Pin */
@@ -379,6 +399,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USB_OverCurrent_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
